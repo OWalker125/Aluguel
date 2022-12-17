@@ -44,7 +44,6 @@ public class Cadastro {
         }
             return false;
     }
-
     public boolean isValidDate(String date){
         if (date != null && date.length() > 0) {
             String expression = "^([0-2]\\d|(3)[0-1])(\\/)(((0)\\d)|((1)[0-2]))(\\/)\\d{4}$";
