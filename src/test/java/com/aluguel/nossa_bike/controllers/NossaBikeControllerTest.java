@@ -1,4 +1,4 @@
-package com.aluguel.nossa_bike.controllers;
+/*package com.aluguel.nossa_bike.controllers;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,7 +18,7 @@ public class NossaBikeControllerTest {
     @Autowired
     NossaBikeController controller;
     
-  /*@Test
+  @Test
     public void olaTestt() {
     LinkedList<String> listaZeroErro = new LinkedList<String>();
     cadastroMock = mock(Cadastro.class);
@@ -37,5 +37,5 @@ public class NossaBikeControllerTest {
             
     assertEquals("Olá, mundo.", response.getBody());
   }
-*/
-}
+
+}*/
