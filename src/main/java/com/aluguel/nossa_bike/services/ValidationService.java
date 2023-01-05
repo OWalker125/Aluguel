@@ -28,8 +28,10 @@ public class ValidationService {
             String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
             Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(emailUser);
-            if (matcher.matches() && dbCiclista.findByEmailUser(emailUser).isEmpty()) {
-                return true;
+            if (dbCiclista.findByEmailUser(emailUser).isEmpty()) {
+                if (matcher.matches()) {
+                    return true;
+                }
             }
         }
         // System.out.println(dbCiclista.findByEmailUser(emailUser));
@@ -79,7 +81,7 @@ public class ValidationService {
     }
 
     public boolean isValidNac(Nacionalidade nac) {
-        if (!nac.equals(Nacionalidade.BRASILEIRO) || !nac.equals(Nacionalidade.ESTRANGEIRO)) {
+        if (!(nac.equals(Nacionalidade.BRASILEIRO) || nac.equals(Nacionalidade.ESTRANGEIRO))) {
             return false;
         } else {
             return true;

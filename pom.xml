@@ -28,7 +28,7 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -37,8 +37,9 @@
 
 		<dependency>
 			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>2.0.2-beta</version>
+			<artifactId>mockito-core</artifactId>
+			<version>4.11.0</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
