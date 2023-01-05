@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.aluguel.nossa_bike.models.Ciclista;
 import com.aluguel.nossa_bike.models.Passaport;
