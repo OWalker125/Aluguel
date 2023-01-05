@@ -25,8 +25,6 @@ public interface CiclistaRepository extends JpaRepository<Ciclista, Integer> {
 
     Ciclista getByid(UUID id);
 
-    Ciclista getOne(UUID id);
-
     @Modifying(clearAutomatically=true)
     @Transactional
     @Query("UPDATE Ciclista c SET c.status = com.aluguel.nossa_bike.models.Ciclista$Status.ATIVO where c.id = ?1")
