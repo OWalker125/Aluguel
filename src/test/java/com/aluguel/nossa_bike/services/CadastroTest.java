@@ -1,4 +1,4 @@
-package com.aluguel.nossa_bike.controllers;
+package com.aluguel.nossa_bike.services;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,14 +18,14 @@ import com.aluguel.nossa_bike.models.Ciclista;
 import com.aluguel.nossa_bike.models.Passaport;
 import com.aluguel.nossa_bike.models.Ciclista.Nacionalidade;
 import com.aluguel.nossa_bike.models.Ciclista.Status;
-import com.aluguel.nossa_bike.services.Cadastro;
+import com.aluguel.nossa_bike.services.ValidationService;
 
 @SpringBootTest
 public class CadastroTest {
 
 
     @InjectMocks
-    Cadastro cadastro = new Cadastro();
+    ValidationService cadastro = new ValidationService();
 
     Ciclista ciclista;
     Passaport passaport;
@@ -43,8 +43,8 @@ public class CadastroTest {
     @Test
     public void whenIsEmailValidThenReturnTrue(){
         startCiclista();
-        String email = ciclista.getEmail();
-        assertEquals(true,cadastro.isValidEmail(email));
+        String email = ciclista.getEmailUser();
+        assertEquals(true,cadastro.isValidEmailUser(email));
     }
 
     @Test
@@ -99,8 +99,8 @@ public class CadastroTest {
     @Test
     public void whenIsValidEmailThenReturnTrue(){
         startCiclista();
-        String email = ciclista.getEmail();
-        assertEquals(true,cadastro.isValidEmail(email));
+        String email = ciclista.getEmailUser();
+        assertEquals(true,cadastro.isValidEmailUser(email));
     }
 
     @Test
@@ -119,9 +119,9 @@ public class CadastroTest {
     }
 
     private void startCiclista(){
-        passaport = new Passaport(1, "01/12/2001", "Brasil");
-        ciclista = new Ciclista(1, "Thiago", Status.INATIVO, "23/02/2000", "473.296.280-77", passaport, Nacionalidade.BRASILEIRO, "teste@teste.com"
-        , "https://teste.net");
+       // passaport = new Passaport(1,1, "01/12/2001", "Brasil");
+       // ciclista = new Ciclista(1, "Thiago", Status.INATIVO, "23/02/2000", "473.296.280-77", passaport, Nacionalidade.BRASILEIRO, "teste@teste.com"
+        //, "https://teste.net");
     }
 }
 
