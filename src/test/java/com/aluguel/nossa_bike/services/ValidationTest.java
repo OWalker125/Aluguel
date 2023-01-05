@@ -21,7 +21,6 @@ import com.aluguel.nossa_bike.models.*;
 import com.aluguel.nossa_bike.models.Ciclista.*;
 import com.aluguel.nossa_bike.repository.CiclistaRepository;
 
-@SpringBootTest
 public class ValidationTest {
 
     @Mock
