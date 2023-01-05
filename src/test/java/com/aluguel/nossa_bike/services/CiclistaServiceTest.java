@@ -23,7 +23,7 @@ import com.aluguel.nossa_bike.models.Ciclista.Status;
 import com.aluguel.nossa_bike.repository.ActivationRepository;
 import com.aluguel.nossa_bike.repository.CiclistaRepository;
 
-public class CiclistaServiceTeste {
+public class CiclistaServiceTest{
     @InjectMocks
     CiclistaService ciclistaFunctions;
 
