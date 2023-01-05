@@ -41,12 +41,12 @@ public class CiclistaService {
 
     public Ciclista activateAccount(UUID idCiclista) {
         try {
-            Ciclista ciclista = dbCiclista.getOne(idCiclista);
+            Ciclista ciclista = dbCiclista.getByid(idCiclista);
             if (ciclista.getStatus() == Status.ATIVO) {
                 return ciclista;
             } else {
                 dbCiclista.updateStatusToActive(idCiclista);
-                ciclista = dbCiclista.getOne(idCiclista);
+                ciclista = dbCiclista.getByid(idCiclista);
                 registerActivation(ciclista);
                 return ciclista;
             }
