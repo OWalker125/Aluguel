@@ -41,12 +41,12 @@ public class CiclistaService {
 
     public Ciclista activateAccount(UUID idCiclista) {
         try {
-            Ciclista ciclista = dbCiclista.findById(idCiclista).get(0);
+            Ciclista ciclista = dbCiclista.getOne(idCiclista);
             if (ciclista.getStatus() == Status.ATIVO) {
                 return ciclista;
             } else {
                 dbCiclista.updateStatusToActive(idCiclista);
-                ciclista = dbCiclista.findById(idCiclista).get(0);
+                ciclista = dbCiclista.getOne(idCiclista);
                 registerActivation(ciclista);
                 return ciclista;
             }
@@ -55,7 +55,7 @@ public class CiclistaService {
         }
     }
 
-    private void registerActivation(Ciclista ciclista) {
+    void registerActivation(Ciclista ciclista) {
         ActivationLog log = new ActivationLog(LocalDateTime.now(), ciclista.getEmailUser());
         dbLogActivation.save(log);
     }

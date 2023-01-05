@@ -146,7 +146,7 @@ public class ValidationService {
     // errado
     public List<String> isValidORNull(Ciclista ciclista) {
         LinkedList<String> erros = new LinkedList<>();
-        if (!(ciclista.getNome() == null)) {
+        if ((ciclista.getNome() != null)) {
             if (!isValidName(ciclista.getNome())) {
                 erros.add("Formato de nome inválido");
             }
