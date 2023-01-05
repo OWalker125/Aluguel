@@ -32,5 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 
+### My SQL DGOcean ###
+application.properties
+
 ### REPO ###
 /${project.basedir}

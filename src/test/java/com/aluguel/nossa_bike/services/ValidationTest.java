@@ -1,6 +1,7 @@
 package com.aluguel.nossa_bike.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import java.util.LinkedList;
@@ -26,15 +27,10 @@ public class ValidationTest {
     @Mock
     CiclistaRepository dbCiclista;
     static Passaport passaport;
-    static Ciclista ciclista;
+    static Ciclista ciclistaValid, ciclistaInvalid;
 
     @InjectMocks
     ValidationService cadastro = new ValidationService();
-
-    @AfterAll
-    static void testt() {
-        System.out.println("OFF");
-    }
 
     @BeforeEach
     public void setUp() {
@@ -47,83 +43,131 @@ public class ValidationTest {
     }
 
     @Test
-    public void isValidEmailUserTest() {
+    public void whenisEmailValidReturnTrue() {
         List<Ciclista> listaVazia = new LinkedList<Ciclista>();
         doReturn(listaVazia).when(dbCiclista).findByEmailUser(anyString());
-        // when(dbCiclista.findByEmailUser(anyString()).isEmpty()).thenReturn(true);
-
-        String email = ciclista.getEmailUser();
+        String email = ciclistaValid.getEmailUser();
         assertEquals(true, cadastro.isValidEmailUser(email));
     }
 
     @Test
-    public void whenIsNameValidThenReturnTrue() {
+    public void whenisEmailInvalidReturnFalse() {
+        List<Ciclista> listaCheia = new LinkedList<Ciclista>();
+        listaCheia.add(ciclistaValid);
+        doReturn(listaCheia).when(dbCiclista).findByEmailUser(anyString());
+        String email = ciclistaValid.getEmailUser();
+        assertEquals(false, cadastro.isValidEmailUser(email));
+    }
 
-        String name = ciclista.getNome();
+    @Test
+    public void whenIsNameValidThenReturnTrue() {
+        String name = ciclistaValid.getNome();
         assertEquals(true, cadastro.isValidName(name));
     }
 
     @Test
-    public void whenIsStatusValidThenReturnTrue() {
+    public void whenIsNameInvalidThenReturnFalse() {
+        String name = ciclistaInvalid.getNome();
+        assertEquals(false, cadastro.isValidName(name));
+    }
 
-        Status status = ciclista.getStatus();
+    @Test
+    public void whenIsStatusValidThenReturnTrue() {
+        Status status = ciclistaValid.getStatus();
         assertEquals(true, cadastro.isInativeStatus(status));
     }
 
     @Test
-    public void whenIsValidNascThenReturnTrue() {
+    public void whenIsStatusInvalidThenReturnFalse() {
+        Status status = ciclistaInvalid.getStatus();
+        assertEquals(false, cadastro.isInativeStatus(status));
+    }
 
-        String nascimento = ciclista.getNascimento();
+    @Test
+    public void whenIsValidNascThenReturnTrue() {
+        String nascimento = ciclistaValid.getNascimento();
         assertEquals(true, cadastro.isValidDate(nascimento));
     }
 
     @Test
-    public void whenIsValidValThenReturnTrue() {
+    public void whenIsInvalidNascThenReturnFalse() {
+        String nascimento = ciclistaInvalid.getNascimento();
+        assertEquals(false, cadastro.isValidDate(nascimento));
+    }
 
+    @Test
+    public void whenIsValidValThenReturnTrue() {
         String validade = passaport.getValidade();
         assertEquals(true, cadastro.isValidDate(validade));
     }
 
     @Test
-    public void whenIsValidCpfThenReturnTrue() {
+    public void whenIsInvalidValThenReturnFalse() {
+        String validade = "32/13/2099";
+        assertEquals(false, cadastro.isValidDate(validade));
+    }
 
-        String cpf = ciclista.getCpf();
+    @Test
+    public void whenIsValidCpfThenReturnTrue() {
+        String cpf = ciclistaValid.getCpf();
         assertEquals(true, cadastro.isValidCpf(cpf));
     }
 
     @Test
-    public void whenIsValidPassaportThenReturnTrue() {
+    public void whenIsInvalidCpfThenReturnFalse() {
+        String cpf = ciclistaInvalid.getCpf();
+        assertEquals(false, cadastro.isValidCpf(cpf));
+    }
 
-        Passaport passaportTest = ciclista.getPassaport();
+    @Test
+    public void whenIsValidPassaportThenReturnTrue() {
+        Passaport passaportTest = ciclistaValid.getPassaport();
         assertEquals(true, cadastro.isValidPassaport(passaportTest));
     }
 
     @Test
     public void whenIsValidNacThenReturnTrue() {
-
-        Nacionalidade nacionalidade = ciclista.getNacionalidade();
+        Nacionalidade nacionalidade = ciclistaValid.getNacionalidade();
         assertEquals(true, cadastro.isValidNac(nacionalidade));
     }
 
     @Test
     public void whenIsValidUrlThenReturnTrue() {
-
-        String urlFotoDocumento = ciclista.getUrlFotoDocumento();
+        String urlFotoDocumento = ciclistaValid.getUrlFotoDocumento();
         assertEquals(true, cadastro.isValidUri(urlFotoDocumento));
     }
 
     @Test
-    public void whenIsValidThenReturnTrue() {
+    public void whenIsInvalidUrlThenReturnFalse() {
+        String urlFotoDocumento = ciclistaInvalid.getUrlFotoDocumento();
+        assertEquals(false, cadastro.isValidUri(urlFotoDocumento));
+    }
 
-        List<String> resposta = cadastro.isValid(ciclista);
+    @Test
+    public void whenIsValidThenReturnNoError() {
+        List<String> resposta = cadastro.isValid(ciclistaValid);
         List<String> zeroErros = new LinkedList<>();
         assertEquals(zeroErros, resposta);
     }
 
-static void startCiclista(){
-    UUID id = UUID.fromString("d76fdc5b-8066-4bcf-8a29-4dc7a80ba436");
-    passaport = new Passaport(1, 1, "01/12/2001", "Brasil");
-    ciclista = new Ciclista(id, "Thiago", Status.INATIVO, "23/02/2000", "473.296.280-77", passaport,
-            Nacionalidade.BRASILEIRO, "teste@teste.com", "https://teste.net");
-}
+    @Test
+    public void whenIsInvalidThenReturnError() {
+        List<String> resposta = cadastro.isValid(ciclistaInvalid);
+        List<String> erros = new LinkedList<>();
+            erros.add("emailUser inválido");
+            erros.add("Formato de nome inválido");
+            erros.add("Formato de CPF inválido");
+            erros.add("URL de foto inválida");
+            erros.add("Data de nascimento inválida");
+            erros.add("Status só pode ser INATIVO");
+        assertEquals(erros, resposta);
+    }
+
+    static void startCiclista() {
+        UUID id = UUID.fromString("d76fdc5b-8066-4bcf-8a29-4dc7a80ba436");
+        passaport = new Passaport(1, 1, "01/12/2001", "Brasil");
+        ciclistaValid = new Ciclista(id, "Thiago", Status.INATIVO, "23/02/2000", "473.296.280-77", passaport, Nacionalidade.BRASILEIRO, "teste@teste.com", "https://teste.net"); 
+
+        ciclistaInvalid = new Ciclista(id, "01Thiago", Status.ATIVO, "teste", "473.296.280-99", passaport, Nacionalidade.ESTRANGEIRO, "@teste@teste.com", "@[]");
+    }
 }
