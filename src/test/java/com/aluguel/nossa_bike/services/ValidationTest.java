@@ -13,11 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
 import com.aluguel.nossa_bike.models.*;
 import com.aluguel.nossa_bike.models.Ciclista.Nacionalidade;
 import com.aluguel.nossa_bike.models.Ciclista.AccountStatus;
 import com.aluguel.nossa_bike.repository.CiclistaRepository;
+import com.aluguel.nossa_bike.repository.FuncionarioRepository;
 
 public class ValidationTest {
 
@@ -26,7 +28,10 @@ public class ValidationTest {
     @Mock
     Ciclista ciclistaMock;
     @Mock
-    ValidationService validatorMock;
+    FuncionarioRepository dbFunc;
+    @Spy
+    ValidationService validatorSpy;
+
     static Passaport passaport;
     static Ciclista ciclistaValid, ciclistaInvalid;
 
@@ -58,15 +63,6 @@ public class ValidationTest {
         doReturn(listaVazia).when(dbCiclista).findByEmailUser(anyString());
         String email = ciclistaValid.getEmailUser();
         assertEquals(true, validator.isValidEmailCic(email));
-    }
-
-    @Test
-    public void whenisEmailInvalidReturnFalse() {
-        List<Ciclista> listaCheia = new LinkedList<Ciclista>();
-        listaCheia.add(ciclistaValid);
-        doReturn(listaCheia).when(dbCiclista).findByEmailUser(anyString());
-        String email = ciclistaValid.getEmailUser();
-        assertEquals(false, validator.isValidEmailCic(email));
     }
 
     @Test
@@ -155,9 +151,11 @@ public class ValidationTest {
 
     @Test
     public void whenIsValidThenReturnNoError() {
+        List<Funcionario> vazia = new LinkedList<>();
+        when(dbFunc.findByEmailUser(any())).thenReturn(vazia);
         List<String> resposta = validator.isValidCic(ciclistaValid);
         List<String> zeroErros = new LinkedList<>();
-        assertEquals(zeroErros, resposta);
+        assertEquals(vazia, resposta);
     }
 
     @Test

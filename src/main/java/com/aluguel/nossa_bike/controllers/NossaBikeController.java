@@ -182,7 +182,7 @@ public class NossaBikeController {
         }
     }
 
-    @PostMapping("/devolucao")
+   /* @PostMapping("/devolucao")
     public ResponseEntity<String> devolver(@RequestBody DevolucaoDTO devolucaoDto) {
         String erro = cicService.devolver(devolucaoDto);
         if (erro != null) {
@@ -190,7 +190,7 @@ public class NossaBikeController {
         } else {
             return new ResponseEntity<>(erro, HttpStatus.OK);
         }
-    }
+    }*/
 
     @GetMapping("/ciclista/existeEmail/{emailUser}")
     public ResponseEntity<Boolean> buscarCartao(@PathVariable String emailUser) {
