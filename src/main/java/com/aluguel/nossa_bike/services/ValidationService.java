@@ -35,7 +35,7 @@ public class ValidationService {
 
     public boolean isValidEmailCic(String emailUser) {
         if (emailUser != null && emailUser.length() > 0) {
-            if (dbCiclista.findByEmailUser(emailUser).isEmpty()) {
+            if (isExistentEmail(emailUser)) {
                 EmailValidator validator = EmailValidator.getInstance();
                 if (validator.isValid(emailUser)) {
                     return true;
@@ -292,5 +292,9 @@ public class ValidationService {
         cobranca.setCiclista(idCiclista);
         return new RestTemplate().postForEntity("/cobranca", cobranca, CobrancaDTO.class)
                 .getStatusCode() == HttpStatus.OK;
+    }
+
+    public boolean isExistentEmail(String emailUser) {
+        return dbFunc.findByEmailUser(emailUser).isEmpty();
     }
 }

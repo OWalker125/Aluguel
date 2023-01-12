@@ -177,7 +177,7 @@ public class NossaBikeController {
         String erro = cicService.alugar(aluguelDto);
         if (erro != null) {
             return new ResponseEntity<>(erro, HttpStatus.BAD_REQUEST);
-        }else{
+        } else {
             return new ResponseEntity<>(erro, HttpStatus.OK);
         }
     }
@@ -187,8 +187,14 @@ public class NossaBikeController {
         String erro = cicService.devolver(devolucaoDto);
         if (erro != null) {
             return new ResponseEntity<>(erro, HttpStatus.BAD_REQUEST);
-        }else{
+        } else {
             return new ResponseEntity<>(erro, HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/ciclista/existeEmail/{emailUser}")
+    public ResponseEntity<Boolean> buscarCartao(@PathVariable String emailUser) {
+        boolean resposta = cicService.isExistentEmail(emailUser);
+        return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 }

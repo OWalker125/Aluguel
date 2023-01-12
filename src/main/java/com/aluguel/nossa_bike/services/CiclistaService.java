@@ -219,4 +219,8 @@ public class CiclistaService {
         BicicletaDTO bicicletaDTO = new BicicletaDTO(null, "Caloy", "Sei lá", "10/10/2010", 1, StatusBic.DISPONIVEL);
         return bicicletaDTO;
     }
+
+    public boolean isExistentEmail(String emailUser){
+        return validador.isExistentEmail(emailUser);
+    }
 }
