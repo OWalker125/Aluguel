@@ -18,7 +18,6 @@ public class CiclistaTest {
         Ciclista.Nacionalidade nacionalidade = Ciclista.Nacionalidade.BRASILEIRO;
         String emailUser = "user@example.com";
         String urlFotoDocumento = "https://example.com/image.jpg";
-
         Ciclista ciclista = new Ciclista(id, nome, status, nascimento, cpf, passaport, nacionalidade, emailUser, urlFotoDocumento);
 
         assertEquals(id, ciclista.getId());
