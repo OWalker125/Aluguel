@@ -260,17 +260,15 @@ public class ValidationService {
     }
 
     public boolean isBicAvailable(String idTranca) {
-        try {
-            ResponseEntity<BicicletaDTO> response = new RestTemplate()
-                    .getForEntity("/tranca/" + idTranca + "/bicicleta", BicicletaDTO.class);
-            BicicletaDTO bicicleta = response.getBody();
-            if (bicicleta.getStatusBic() != StatusBic.DISPONÍVEL) {
-                return false;
+        ResponseEntity<BicicletaDTO> response = new RestTemplate()
+                .getForEntity("/tranca/" + idTranca + "/bicicleta", BicicletaDTO.class);
+        BicicletaDTO bicicleta = response.getBody();
+        if (bicicleta != null) {
+            if (bicicleta.getStatusBic() == StatusBic.DISPONIVEL) {
+                return true;
             }
-            return true;
-        } catch (Exception e) {
-            return false;
         }
+        return false;
     }
 
     public String isValidToRent(AluguelDTO aluguelDTO) {

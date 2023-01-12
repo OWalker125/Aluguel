@@ -62,7 +62,7 @@ public class NossaBikeController {
 
     @GetMapping("/ciclista/{idCiclista}")
     public ResponseEntity<Ciclista> getAccount(@PathVariable UUID idCiclista) {
-        Ciclista account = dbCiclista.getByid(idCiclista);
+        Ciclista account = dbCiclista.getByUuid(idCiclista);
         if (account == null) {
             return new ResponseEntity<>(account, HttpStatus.BAD_REQUEST);
         }
@@ -82,7 +82,7 @@ public class NossaBikeController {
     public ResponseEntity<Boolean> isAluguelPermited(@PathVariable UUID idCiclista) {
         AluguelStatus rentRecord = dbRent.getByCiclista_Id(idCiclista);
         if (rentRecord == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         }
         Status rentStatus = rentRecord.getRentStatus();
         return new ResponseEntity<>(rentStatus == Status.LIVRE, HttpStatus.OK);
@@ -162,14 +162,13 @@ public class NossaBikeController {
 
     @PutMapping("/cartao/{idCiclista}")
     public ResponseEntity<Cartao> editarCartao(@PathVariable UUID idCiclista, @RequestBody Cartao cartao) {
-        List<String> erros = new LinkedList<String>();
-        erros = cicService.editarCartao(idCiclista, cartao);
+        List<String> erros = cicService.editarCartao(idCiclista, cartao);
         if (erros.isEmpty()) {
             return new ResponseEntity<>(cartao, HttpStatus.OK);
         } else if (erros.get(0).equals("Não encontrado")) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(cartao, HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(cartao, HttpStatus.BAD_REQUEST);
         }
     }
 

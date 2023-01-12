@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class BicicletaDTO {
 
-    public enum StatusBic{DISPONÍVEL,EM_USO,NOVA,APOSENTADA,REPARO_SOLICITADO,EM_REPARO}
+    public enum StatusBic{DISPONIVEL,EM_USO,NOVA,APOSENTADA,REPARO_SOLICITADO,EM_REPARO}
 
     UUID id;
     String marca;

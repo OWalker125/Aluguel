@@ -68,12 +68,12 @@ public class CiclistaService {
 
     public Ciclista activateAccount(UUID idCiclista) {
         try {
-            Ciclista ciclista = dbCiclista.getByid(idCiclista);
+            Ciclista ciclista = dbCiclista.getByUuid(idCiclista);
             if (ciclista.getStatus() == AccountStatus.ATIVO) {
                 return ciclista;
             } else {
                 dbCiclista.updateStatusToActive(idCiclista);
-                ciclista = dbCiclista.getByid(idCiclista);
+                ciclista = dbCiclista.getByUuid(idCiclista);
                 registerActivation(ciclista);
                 return ciclista;
             }
@@ -88,7 +88,7 @@ public class CiclistaService {
     }
 
     public List<String> editAccount(UUID idCiclista, Ciclista ciclista) {
-        Ciclista cicToUpdate = dbCiclista.getByid(idCiclista);
+        Ciclista cicToUpdate = dbCiclista.getByUuid(idCiclista);
         List<String> erros = validador.isValidORNull(ciclista);
         if (!erros.isEmpty()) {
             return erros;
@@ -119,7 +119,7 @@ public class CiclistaService {
     }
 
     public List<String> editarCartao(UUID idCiclista, Cartao cartao) {
-        Ciclista ciclista = dbCiclista.getByid(idCiclista);
+        Ciclista ciclista = dbCiclista.getByUuid(idCiclista);
         List<String> erros = new LinkedList<>();
         if (ciclista != null) {
             cartao.setCiclista(ciclista);
@@ -134,10 +134,10 @@ public class CiclistaService {
 
     public String gerarMenssagemAluguel(AluguelDTO aluguelDto, LocalDateTime hora) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        hora.format(formatter);
-        String nome = dbCiclista.getByid(aluguelDto.getCiclista()).getNome();
+        String horaFormat = hora.format(formatter);
+        String nome = dbCiclista.getByUuid(aluguelDto.getCiclista()).getNome();
         return "O(A) Sr(a). " + nome +
-                " alugou com sucesso um bicicleta hoje às " + hora +
+                " alugou com sucesso um bicicleta hoje às " + horaFormat +
                 " pelo valor de R$10,00, isso lhe dá direito a usar a bicicleta por duas horas, lembre-se que em caso de atraso na entrega será cobrado um valor adicional.";
     }
 
@@ -152,7 +152,7 @@ public class CiclistaService {
         UUID idBicicleta = bicicleta.getId();
         if (erro == null) {
             Cartao cartao = dbCartao.getByCiclista_Id(idCiclista);
-            Ciclista ciclista = dbCiclista.getByid(idCiclista);
+            Ciclista ciclista = dbCiclista.getByUuid(idCiclista);
             // new RestTemplate().postForEntity("http://localhost:8080/tranca/" +
             // idTranca.toString() + "/destrancar", idBicicleta.toString(),
             // BicicletaDTO.class);
@@ -216,7 +216,7 @@ public class CiclistaService {
     }
 
     public BicicletaDTO temporarioBicicleta() {
-        BicicletaDTO bicicletaDTO = new BicicletaDTO(null, "Caloy", "Sei lá", "10/10/2010", 1, StatusBic.DISPONÍVEL);
+        BicicletaDTO bicicletaDTO = new BicicletaDTO(null, "Caloy", "Sei lá", "10/10/2010", 1, StatusBic.DISPONIVEL);
         return bicicletaDTO;
     }
 }
