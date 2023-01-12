@@ -84,8 +84,8 @@ public class CiclistaServiceTest {
     @Test
     public void whenAllValidThenReturnAEmptyList() {
         List<String> listaVazia = new LinkedList<String>();
-        when(validator.isValid(ciclistaValid)).thenReturn(listaVazia);
-        when(validator.isValid(ciclistaValid)).thenReturn(listaVazia);
+        when(validator.isValidCic(ciclistaValid)).thenReturn(listaVazia);
+        when(validator.isValidCic(ciclistaValid)).thenReturn(listaVazia);
         when(dbCartao.save(any())).thenReturn(null);
         when(dbRent.save(any())).thenReturn(null);
         when(dbCiclista.save(any())).thenReturn(null);
@@ -100,7 +100,7 @@ public class CiclistaServiceTest {
     public void whenInvalidThenReturnAErrorList() {
         List<String> erro = new LinkedList<String>();
         erro.add("Formato de CPF inválido");
-        when(validator.isValid(ciclistaValid)).thenReturn(erro);
+        when(validator.isValidCic(ciclistaValid)).thenReturn(erro);
 
         CicCartDTO cicCartDTO = new CicCartDTO();
         cicCartDTO.setCiclista(ciclistaValid);

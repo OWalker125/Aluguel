@@ -20,20 +20,17 @@ public class FuncionarioService {
     ValidationService validator;
 
     public List<String> cadastrar(Funcionario funcionario) {
-        List<String> erros = validator.isValid(funcionario);
+        List<String> erros = validator.isValidFunc(funcionario);
         if (erros.isEmpty()) {
             dbFunc.save(funcionario);
-            return erros;
-        } else {
-            return erros;
         }
+        return erros;
     }
 
     public List<String> editar(UUID matricula, Funcionario funcionario) {
-        List<String> erros = new LinkedList<>();
+        List<String> erros = validator.isValidFunc(funcionario);
         Funcionario funcSalvo = dbFunc.getByMatricula(matricula);
         if (funcSalvo != null) {
-            erros = validator.isValid(funcionario);
             if (erros.isEmpty()) {
                 funcionario.setMatricula(matricula);
                 dbFunc.save(funcionario);

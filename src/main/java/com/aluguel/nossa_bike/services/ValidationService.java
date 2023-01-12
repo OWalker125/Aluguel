@@ -151,7 +151,7 @@ public class ValidationService {
         return false;
     }
 
-    public List<String> isValid(Cartao cartao) {
+    public List<String> isValidCart(Cartao cartao) {
         LinkedList<String> erros = new LinkedList<>();
         if (!isValidCardNumber(cartao.getNumero())) {
             erros.add("Número de cartão inválido");
@@ -171,7 +171,7 @@ public class ValidationService {
         return idade >= 0;
     }
 
-    public List<String> isValid(Ciclista ciclista) {
+    public List<String> isValidCic(Ciclista ciclista) {
         LinkedList<String> erros = new LinkedList<>();
         if (!isValidEmailCic(ciclista.getEmailUser())) {
             erros.add("EmailUser inválido ou existente");
@@ -233,7 +233,7 @@ public class ValidationService {
         return erros;
     }
 
-    public List<String> isValid(Funcionario funcionario) {
+    public List<String> isValidFunc(Funcionario funcionario) {
         LinkedList<String> erros = new LinkedList<>();
         if (!isValidEmailFunc(funcionario.getEmailUser())) {
             erros.add("emailUser inválido");

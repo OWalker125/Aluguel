@@ -48,10 +48,10 @@ public class CiclistaService {
 
     public List<String> cadastrar(CicCartDTO cicCart) {
         Ciclista ciclista = cicCart.getCiclista();
-        List<String> erros = validador.isValid(ciclista);
+        List<String> erros = validador.isValidCic(ciclista);
         Cartao cartao = cicCart.getCartao();
         cartao.setCiclista(ciclista);
-        erros.addAll(validador.isValid(cartao));
+        erros.addAll(validador.isValidCart(cartao));
         if (!erros.isEmpty()) {
             return erros;
         } else {
@@ -123,7 +123,7 @@ public class CiclistaService {
         List<String> erros = new LinkedList<>();
         if (ciclista != null) {
             cartao.setCiclista(ciclista);
-            if (validador.isValid(cartao).isEmpty()) {
+            if (validador.isValidCart(cartao).isEmpty()) {
                 dbCartao.save(cartao);
             }
             return erros;

@@ -155,14 +155,14 @@ public class ValidationTest {
 
     @Test
     public void whenIsValidThenReturnNoError() {
-        List<String> resposta = validator.isValid(ciclistaValid);
+        List<String> resposta = validator.isValidCic(ciclistaValid);
         List<String> zeroErros = new LinkedList<>();
         assertEquals(zeroErros, resposta);
     }
 
     @Test
     public void whenIsInvalidThenReturnError() {
-        List<String> resposta = validator.isValid(ciclistaInvalid);
+        List<String> resposta = validator.isValidCic(ciclistaInvalid);
         List<String> erros = new LinkedList<>();
         erros.add("EmailUser inválido ou existente");
         erros.add("Formato de nome inválido");
