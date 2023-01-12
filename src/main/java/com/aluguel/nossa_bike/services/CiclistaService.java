@@ -68,12 +68,12 @@ public class CiclistaService {
 
     public Ciclista activateAccount(UUID idCiclista) {
         try {
-            Ciclista ciclista = dbCiclista.getByUuid(idCiclista);
+            Ciclista ciclista = dbCiclista.getById(idCiclista);
             if (ciclista.getStatus() == AccountStatus.ATIVO) {
                 return ciclista;
             } else {
                 dbCiclista.updateStatusToActive(idCiclista);
-                ciclista = dbCiclista.getByUuid(idCiclista);
+                ciclista = dbCiclista.getById(idCiclista);
                 registerActivation(ciclista);
                 return ciclista;
             }
@@ -88,7 +88,7 @@ public class CiclistaService {
     }
 
     public List<String> editAccount(UUID idCiclista, Ciclista ciclista) {
-        Ciclista cicToUpdate = dbCiclista.getByUuid(idCiclista);
+        Ciclista cicToUpdate = dbCiclista.getById(idCiclista);
         List<String> erros = validador.isValidORNull(ciclista);
         if (!erros.isEmpty()) {
             return erros;
@@ -119,7 +119,7 @@ public class CiclistaService {
     }
 
     public List<String> editarCartao(UUID idCiclista, Cartao cartao) {
-        Ciclista ciclista = dbCiclista.getByUuid(idCiclista);
+        Ciclista ciclista = dbCiclista.getById(idCiclista);
         List<String> erros = new LinkedList<>();
         if (ciclista != null) {
             cartao.setCiclista(ciclista);
@@ -135,7 +135,7 @@ public class CiclistaService {
     public String gerarMenssagemAluguel(AluguelDTO aluguelDto, LocalDateTime hora) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         String horaFormat = hora.format(formatter);
-        String nome = dbCiclista.getByUuid(aluguelDto.getCiclista()).getNome();
+        String nome = dbCiclista.getById(aluguelDto.getCiclista()).getNome();
         return "O(A) Sr(a). " + nome +
                 " alugou com sucesso um bicicleta hoje às " + horaFormat +
                 " pelo valor de R$10,00, isso lhe dá direito a usar a bicicleta por duas horas, lembre-se que em caso de atraso na entrega será cobrado um valor adicional.";
@@ -152,7 +152,7 @@ public class CiclistaService {
         UUID idBicicleta = bicicleta.getId();
         if (erro == null) {
             Cartao cartao = dbCartao.getByCiclista_Id(idCiclista);
-            Ciclista ciclista = dbCiclista.getByUuid(idCiclista);
+            Ciclista ciclista = dbCiclista.getById(idCiclista);
             // new RestTemplate().postForEntity("http://localhost:8080/tranca/" +
             // idTranca.toString() + "/destrancar", idBicicleta.toString(),
             // BicicletaDTO.class);
@@ -166,7 +166,7 @@ public class CiclistaService {
         return erro;
     }
 
-    public String devolver(DevolucaoDTO devolucaoDto) {
+   /* public String devolver(DevolucaoDTO devolucaoDto) {
         StatusFatura statusFatura = StatusFatura.PAGA;
         LocalDateTime devHora = LocalDateTime.now();
         String erro;
@@ -176,18 +176,18 @@ public class CiclistaService {
         Ciclista ciclista = aluguel.getCiclista();
         Duration duracao = Duration.between(aluguel.getDataHora(), devHora);
 
-        if (/*
-             * new RestTemplate().getForEntity("/bicicleta/" + idBicicleta.toString(),
-             * BicicletaDTO.class)
-             * .getStatusCode() == HttpStatus.OK
-             */true) {
+        if (
+              new RestTemplate().getForEntity("/bicicleta/" + idBicicleta.toString(),
+              BicicletaDTO.class)
+              .getStatusCode() == HttpStatus.OK
+            true) {
             long taxas = taxCalc(duracao);
             if (taxas > 0) {
                 NovaCobrancaDTO cobranca = new NovaCobrancaDTO(taxas, ciclista.getId());
-                if (false/*
-                          * new RestTemplate().postForEntity("/cobranca", cobranca, CobrancaDTO.class)
-                          * .getStatusCode() != HttpStatus.OK
-                          */) {
+                if (false
+                           new RestTemplate().postForEntity("/cobranca", cobranca, CobrancaDTO.class)
+                           .getStatusCode() != HttpStatus.OK
+                          ) {
                     statusFatura = StatusFatura.ABERTA;
                 } else {
                     taxas = 0;
@@ -201,7 +201,7 @@ public class CiclistaService {
             erro = "bicicleta não encontrada";
             return erro;
         }
-    }
+    }*/
 
     public long taxCalc(Duration tempo) {
         long resultado = 0;

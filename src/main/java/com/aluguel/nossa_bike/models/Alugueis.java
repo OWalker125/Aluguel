@@ -17,11 +17,9 @@ public class Alugueis {
     UUID tranca;
     @Column
     UUID bicicleta;
-    @Column
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cartao_id")
     Cartao cartao;
-    @Column
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ciclista_id")
     Ciclista ciclista;

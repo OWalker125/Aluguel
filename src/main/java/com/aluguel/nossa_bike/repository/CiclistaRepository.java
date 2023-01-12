@@ -19,7 +19,7 @@ public interface CiclistaRepository extends JpaRepository<Ciclista, Integer>{
 
     List<Ciclista> findById(UUID id);
 
-    Ciclista getByUuid(UUID id);
+    Ciclista getById(UUID id);
 
     @Modifying(clearAutomatically=true)
     @Transactional

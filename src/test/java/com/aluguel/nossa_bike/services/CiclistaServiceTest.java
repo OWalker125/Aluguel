@@ -111,7 +111,7 @@ public class CiclistaServiceTest {
     @Test
     public void whenStatusActiveOnlyReturn() {
         UUID id = UUID.fromString("d76fdc5b-8066-4bcf-8a29-4dc7a80ba436");
-        when(dbCiclista.getByUuid(id)).thenReturn(ciclistaInvalid);
+        when(dbCiclista.getById(id)).thenReturn(ciclistaInvalid);
         assertEquals(ciclistaInvalid, ciclistaFunctions.activateAccount(id));
     }
 
@@ -121,7 +121,7 @@ public class CiclistaServiceTest {
         UUID id = UUID.fromString("d76fdc5b-8066-4bcf-8a29-4dc7a80ba436");
         Ciclista ciclistaMix = new Ciclista(id, "Thiago", AccountStatus.ATIVO, "teste", "473.296.280-77", passaport,
                 Nacionalidade.BRASILEIRO, "@teste@teste.com", "https://teste.net");
-        when(dbCiclista.getByUuid(id)).thenReturn(ciclistaInvalid);
+        when(dbCiclista.getById(id)).thenReturn(ciclistaInvalid);
         when(validator.isValidORNull(ciclistaValid)).thenReturn(listaVazia);
         when(dbCiclista.save(ciclistaMix)).thenReturn(null);
 
@@ -135,7 +135,7 @@ public class CiclistaServiceTest {
         UUID id = UUID.fromString("d76fdc5b-8066-4bcf-8a29-4dc7a80ba436");
         Ciclista ciclistaMix = new Ciclista(id, "Thiago", AccountStatus.ATIVO, "teste", "473.296.280-77", passaport,
                 Nacionalidade.BRASILEIRO, "@teste@teste.com", "https://teste.net");
-        when(dbCiclista.getByUuid(id)).thenReturn(ciclistaInvalid);
+        when(dbCiclista.getById(id)).thenReturn(ciclistaInvalid);
         when(validator.isValidORNull(ciclistaValid)).thenReturn(erro);
         when(dbCiclista.save(ciclistaMix)).thenReturn(null);
 
@@ -152,7 +152,7 @@ public class CiclistaServiceTest {
         when(validator.isValidToRent(any())).thenReturn(null);
         when(bicicleta.getId()).thenReturn(UUID.fromString("d76fdc5b-8066-4bcf-8a29-4dc7a80ba436"));
         when(dbCartao.getByCiclista_Id(any())).thenReturn(cartao);
-        when(dbCiclista.getByUuid(any())).thenReturn(ciclistaValid);
+        when(dbCiclista.getById(any())).thenReturn(ciclistaValid);
         when(dbAlugueis.save(any())).thenReturn(null);
 
         assertEquals(null, ciclistaFunctions.alugar(aluguelDTO));
@@ -169,7 +169,7 @@ public class CiclistaServiceTest {
         when(validator.isValidToRent(any())).thenReturn(erro);
         when(bicicleta.getId()).thenReturn(UUID.fromString("d76fdc5b-8066-4bcf-8a29-4dc7a80ba436"));
         when(dbCartao.getByCiclista_Id(any())).thenReturn(cartao);
-        when(dbCiclista.getByUuid(any())).thenReturn(ciclistaValid);
+        when(dbCiclista.getById(any())).thenReturn(ciclistaValid);
         when(dbAlugueis.save(any())).thenReturn(null);
 
         assertEquals(erro, ciclistaFunctions.alugar(aluguelDTO));

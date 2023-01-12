@@ -62,7 +62,7 @@ public class NossaBikeController {
 
     @GetMapping("/ciclista/{idCiclista}")
     public ResponseEntity<Ciclista> getAccount(@PathVariable UUID idCiclista) {
-        Ciclista account = dbCiclista.getByUuid(idCiclista);
+        Ciclista account = dbCiclista.getById(idCiclista);
         if (account == null) {
             return new ResponseEntity<>(account, HttpStatus.BAD_REQUEST);
         }

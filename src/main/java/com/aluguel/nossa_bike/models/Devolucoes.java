@@ -31,7 +31,6 @@ public class Devolucoes{
     Cartao cartao;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ciclista_id")
-    @Column
     Ciclista ciclista;
 
     public Devolucoes() {
