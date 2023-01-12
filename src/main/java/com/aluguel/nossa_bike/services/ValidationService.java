@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,11 +35,9 @@ public class ValidationService {
 
     public boolean isValidEmailCic(String emailUser) {
         if (emailUser != null && emailUser.length() > 0) {
-            String expression = "^(?=.{1,256})(?=.{1,64}@.{1,255}$)(?=.{1,64}@[^@]+$)(?=.{1,255}@[^@]+\\.[^@]+$)[A-Za-z0-9._%+-]+(@|\\[at\\])([A-Za-z0-9.-]+\\.[A-Z|a-z]{2,})$";
-            Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(emailUser);
             if (dbCiclista.findByEmailUser(emailUser).isEmpty()) {
-                if (matcher.matches()) {
+                EmailValidator validator = EmailValidator.getInstance();
+                if (validator.isValid(emailUser)) {
                     return true;
                 }
             }
@@ -48,11 +47,9 @@ public class ValidationService {
 
     public boolean isValidEmailFunc(String emailUser) {
         if (emailUser != null && emailUser.length() > 0) {
-            String expression = "^(?=.{1,256})(?=.{1,64}@.{1,255}$)(?=.{1,64}@[^@]+$)(?=.{1,255}@[^@]+\\.[^@]+$)[A-Za-z0-9._%+-]+(@|\\[at\\])([A-Za-z0-9.-]+\\.[A-Z|a-z]{2,})$";
-            Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(emailUser);
             if (dbFunc.findByEmailUser(emailUser).isEmpty()) {
-                if (matcher.matches()) {
+                EmailValidator validator = EmailValidator.getInstance();
+                if (validator.isValid(emailUser)) {
                     return true;
                 }
             }
@@ -285,16 +282,17 @@ public class ValidationService {
         if (!isBicAvailable(idTranca)) {
             return "Bicicleta Indisponível ou inexistente";
         }
-        if(!hasChargeCompleted(idCiclista)){
+        if (!hasChargeCompleted(idCiclista)) {
             return "Houve algum erro durante a cobrança";
         }
         return null;
     }
 
-    public boolean hasChargeCompleted(UUID idCiclista){
+    public boolean hasChargeCompleted(UUID idCiclista) {
         NovaCobrancaDTO cobranca = new NovaCobrancaDTO();
         cobranca.setValor(10);
         cobranca.setCiclista(idCiclista);
-        return new RestTemplate().postForEntity("/cobranca", cobranca , CobrancaDTO.class).getStatusCode() == HttpStatus.OK;
+        return new RestTemplate().postForEntity("/cobranca", cobranca, CobrancaDTO.class)
+                .getStatusCode() == HttpStatus.OK;
     }
 }
