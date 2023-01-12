@@ -2,17 +2,24 @@ package com.aluguel.nossa_bike.services;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import com.aluguel.nossa_bike.models.Ciclista;
-import com.aluguel.nossa_bike.models.Passaport;
+import com.aluguel.nossa_bike.models.*;
 import com.aluguel.nossa_bike.models.Ciclista.*;
+import com.aluguel.nossa_bike.models.dtos.*;
+import com.aluguel.nossa_bike.models.dtos.BicicletaDTO.StatusBic;
 import com.aluguel.nossa_bike.repository.CiclistaRepository;
+import com.aluguel.nossa_bike.repository.FuncionarioRepository;
 
 import br.com.caelum.stella.ValidationMessage;
 import br.com.caelum.stella.validation.CPFValidator;
@@ -22,9 +29,12 @@ public class ValidationService {
     @Autowired
     private CiclistaRepository dbCiclista;
 
-    public boolean isValidEmailUser(String emailUser) {
+    @Autowired
+    private FuncionarioRepository dbFunc;
+
+    public boolean isValidEmailCic(String emailUser) {
         if (emailUser != null && emailUser.length() > 0) {
-            String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+            String expression = "^(?=.{1,256})(?=.{1,64}@.{1,255}$)(?=.{1,64}@[^@]+$)(?=.{1,255}@[^@]+\\.[^@]+$)[A-Za-z0-9._%+-]+(@|\\[at\\])([A-Za-z0-9.-]+\\.[A-Z|a-z]{2,})$";
             Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(emailUser);
             if (dbCiclista.findByEmailUser(emailUser).isEmpty()) {
@@ -33,13 +43,26 @@ public class ValidationService {
                 }
             }
         }
-        // System.out.println(dbCiclista.findByEmailUser(emailUser));
+        return false;
+    }
+
+    public boolean isValidEmailFunc(String emailUser) {
+        if (emailUser != null && emailUser.length() > 0) {
+            String expression = "^(?=.{1,256})(?=.{1,64}@.{1,255}$)(?=.{1,64}@[^@]+$)(?=.{1,255}@[^@]+\\.[^@]+$)[A-Za-z0-9._%+-]+(@|\\[at\\])([A-Za-z0-9.-]+\\.[A-Z|a-z]{2,})$";
+            Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(emailUser);
+            if (dbFunc.findByEmailUser(emailUser).isEmpty()) {
+                if (matcher.matches()) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
     public boolean isValidName(String nome) {
         if (nome != null && nome.length() > 0) {
-            String expression = "[a-z]{1,15}\s|[a-z]{1,15}$";
+            String expression = "^[A-Za-z]{1,15}(?:\\s[A-Za-z]{1,15})*$";
             Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(nome);
             if (matcher.matches()) {
@@ -51,7 +74,7 @@ public class ValidationService {
 
     public boolean isValidDate(String date) {
         if (date != null && date.length() > 0) {
-            String expression = "^([0-2]\\d|(3)[0-1])(\\/)(((0)\\d)|((1)[0-2]))(\\/)\\d{4}$";
+            String expression = "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$";
             Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(date);
             if (matcher.matches()) {
@@ -87,8 +110,8 @@ public class ValidationService {
         }
     }
 
-    public boolean isInativeStatus(Status nac) {
-        if (!nac.equals(Status.INATIVO)) {
+    public boolean isInativeStatus(AccountStatus nac) {
+        if (!nac.equals(AccountStatus.INATIVO)) {
             return false;
         } else {
             return true;
@@ -105,14 +128,56 @@ public class ValidationService {
         }
     }
 
-    public boolean isValidCreditCard() {
-        return true;
+    public boolean isValidCardNumber(Long numero) {
+        String numeroString = String.valueOf(numero);
+        if (numeroString != null && numeroString.length() > 0) {
+            String expression = "^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\\d{3})\\d{11})$";
+            Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(numeroString);
+            if (matcher.matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isValidCardCvv(int cvv) {
+        String cvvString = String.valueOf(cvv);
+        if (cvvString != null && cvvString.length() > 0) {
+            String expression = "^[0-9]{3,4}$";
+            Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(cvvString);
+            if (matcher.matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<String> isValid(Cartao cartao) {
+        LinkedList<String> erros = new LinkedList<>();
+        if (!isValidCardNumber(cartao.getNumero())) {
+            erros.add("Número de cartão inválido");
+        }
+        if (!isValidCardCvv(cartao.getCvv())) {
+            erros.add("Número de cvv");
+        }
+        if (!isValidDate(cartao.getValidade())) {
+            erros.add("Data de validade inválida");
+        }
+        return erros;
+    }
+
+    // Já que não sei se deveria levar em consideração questões legais de minimo e
+    // teto de idade apenas não deixei cadastrar idade negativa
+    public boolean isValidAge(int idade) {
+        return idade >= 0;
     }
 
     public List<String> isValid(Ciclista ciclista) {
         LinkedList<String> erros = new LinkedList<>();
-        if (!isValidEmailUser(ciclista.getEmailUser())) {
-            erros.add("emailUser inválido");
+        if (!isValidEmailCic(ciclista.getEmailUser())) {
+            erros.add("EmailUser inválido ou existente");
         }
         if (!isValidName(ciclista.getNome())) {
             erros.add("Formato de nome inválido");
@@ -134,9 +199,6 @@ public class ValidationService {
         }
         if (!isInativeStatus(ciclista.getStatus())) {
             erros.add("Status só pode ser INATIVO");
-        }
-        if (!isValidCreditCard()) {
-            erros.add("Apresente um cartão válido");
         }
         return erros;
     }
@@ -172,5 +234,67 @@ public class ValidationService {
             }
         }
         return erros;
+    }
+
+    public List<String> isValid(Funcionario funcionario) {
+        LinkedList<String> erros = new LinkedList<>();
+        if (!isValidEmailFunc(funcionario.getEmailUser())) {
+            erros.add("emailUser inválido");
+        }
+        if (!isValidName(funcionario.getNome())) {
+            erros.add("Formato de nome inválido");
+        }
+        if (!isValidCpf(funcionario.getCpf())) {
+            erros.add("Formato de CPF inválido");
+        }
+        if (!isValidAge(funcionario.getIdade())) {
+            erros.add("Idade Inválida");
+        }
+        return erros;
+    }
+
+    public boolean isValidTranca(String idTranca) {
+        try {
+            return new RestTemplate().getForEntity("/tranca/" + idTranca, TrancaDTO.class) != null;
+        } catch (Exception e) {
+            return false;
+        }
+        // return true;
+    }
+
+    public boolean isBicAvailable(String idTranca) {
+        try {
+            ResponseEntity<BicicletaDTO> response = new RestTemplate()
+                    .getForEntity("/tranca/" + idTranca + "/bicicleta", BicicletaDTO.class);
+            BicicletaDTO bicicleta = response.getBody();
+            if (bicicleta.getStatusBic() != StatusBic.DISPONÍVEL) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String isValidToRent(AluguelDTO aluguelDTO) {
+        String idTranca = aluguelDTO.getTrancaInicio().toString();
+        UUID idCiclista = aluguelDTO.getCiclista();
+        if (!isValidTranca(idTranca)) {
+            return "Tranca inválida";
+        }
+        if (!isBicAvailable(idTranca)) {
+            return "Bicicleta Indisponível ou inexistente";
+        }
+        if(!hasChargeCompleted(idCiclista)){
+            return "Houve algum erro durante a cobrança";
+        }
+        return null;
+    }
+
+    public boolean hasChargeCompleted(UUID idCiclista){
+        NovaCobrancaDTO cobranca = new NovaCobrancaDTO();
+        cobranca.setValor(10);
+        cobranca.setCiclista(idCiclista);
+        return new RestTemplate().postForEntity("/cobranca", cobranca , CobrancaDTO.class).getStatusCode() == HttpStatus.OK;
     }
 }

@@ -21,6 +21,9 @@ public class ActivationLog {
     @Column
     String email;
 
+    public ActivationLog() {
+    }
+
     public ActivationLog(LocalDateTime dateTime, String email) {
         this.dateTime = dateTime;
         this.email = email;

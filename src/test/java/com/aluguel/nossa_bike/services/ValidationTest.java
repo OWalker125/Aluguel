@@ -1,27 +1,23 @@
 package com.aluguel.nossa_bike.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import com.aluguel.nossa_bike.models.*;
 import com.aluguel.nossa_bike.models.Ciclista.Nacionalidade;
-import com.aluguel.nossa_bike.models.Ciclista.Status;
+import com.aluguel.nossa_bike.models.Ciclista.AccountStatus;
 import com.aluguel.nossa_bike.repository.CiclistaRepository;
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Any;
 
 public class ValidationTest {
 
@@ -49,10 +45,10 @@ public class ValidationTest {
 
     static void startCiclista() {
         UUID id = UUID.fromString("d76fdc5b-8066-4bcf-8a29-4dc7a80ba436");
-        passaport = new Passaport(1, 1, "01/12/2001", "Brasil");
-        ciclistaValid = new Ciclista(id, "Thiago", Status.INATIVO, "23/02/2000", "473.296.280-77", passaport,
+        passaport = new Passaport(UUID.randomUUID(), 1, "01/12/2001", "Brasil");
+        ciclistaValid = new Ciclista(id, "Thiago", AccountStatus.INATIVO, "23/02/2000", "473.296.280-77", passaport,
                 Nacionalidade.BRASILEIRO, "teste@teste.com", "https://teste.net");
-        ciclistaInvalid = new Ciclista(id, "01Thiago", Status.ATIVO, "teste", "473.296.280-99", passaport,
+        ciclistaInvalid = new Ciclista(id, "01Thiago", AccountStatus.ATIVO, "teste", "473.296.280-99", passaport,
                 Nacionalidade.ESTRANGEIRO, "@teste@teste.com", "@[]");
     }
 
@@ -61,7 +57,7 @@ public class ValidationTest {
         List<Ciclista> listaVazia = new LinkedList<Ciclista>();
         doReturn(listaVazia).when(dbCiclista).findByEmailUser(anyString());
         String email = ciclistaValid.getEmailUser();
-        assertEquals(true, validator.isValidEmailUser(email));
+        assertEquals(true, validator.isValidEmailCic(email));
     }
 
     @Test
@@ -70,7 +66,7 @@ public class ValidationTest {
         listaCheia.add(ciclistaValid);
         doReturn(listaCheia).when(dbCiclista).findByEmailUser(anyString());
         String email = ciclistaValid.getEmailUser();
-        assertEquals(false, validator.isValidEmailUser(email));
+        assertEquals(false, validator.isValidEmailCic(email));
     }
 
     @Test
@@ -87,13 +83,13 @@ public class ValidationTest {
 
     @Test
     public void whenIsStatusValidThenReturnTrue() {
-        Status status = ciclistaValid.getStatus();
+        AccountStatus status = ciclistaValid.getStatus();
         assertEquals(true, validator.isInativeStatus(status));
     }
 
     @Test
     public void whenIsStatusInvalidThenReturnFalse() {
-        Status status = ciclistaInvalid.getStatus();
+        AccountStatus status = ciclistaInvalid.getStatus();
         assertEquals(false, validator.isInativeStatus(status));
     }
 
@@ -168,7 +164,7 @@ public class ValidationTest {
     public void whenIsInvalidThenReturnError() {
         List<String> resposta = validator.isValid(ciclistaInvalid);
         List<String> erros = new LinkedList<>();
-        erros.add("emailUser inválido");
+        erros.add("EmailUser inválido ou existente");
         erros.add("Formato de nome inválido");
         erros.add("Formato de CPF inválido");
         erros.add("URL de foto inválida");
@@ -201,8 +197,6 @@ public class ValidationTest {
         erros.add("Formato de nome inválido");
         erros.add("Formato de CPF inválido");
         erros.add("URL de foto inválida");
-
-        Nacionalidade brasileiro = Nacionalidade.BRASILEIRO;
 
         assertEquals(erros, validator.isValidORNull(ciclistaInvalid));
     }

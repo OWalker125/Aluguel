@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 @Table
 public class Ciclista {
 
-    public enum Status {
+    public enum AccountStatus {
         ATIVO, INATIVO, AGUARDANDO_CONFIRMACAO
     }
 
@@ -30,7 +30,7 @@ public class Ciclista {
     @Column
     private String nome;
     @Column
-    private Status status;
+    private AccountStatus status;
     @Column
     private String nascimento;
     @Column
@@ -48,7 +48,7 @@ public class Ciclista {
     public Ciclista() {
     }
 
-    public Ciclista(UUID id, String nome, Status status, String nascimento, String cpf, Passaport passaport,
+    public Ciclista(UUID id, String nome, AccountStatus status, String nascimento, String cpf, Passaport passaport,
             Nacionalidade nacionalidade, String emailUser, String urlFotoDocumento) {
         this.id = id;
         this.nome = nome;
@@ -78,11 +78,11 @@ public class Ciclista {
         this.nome = nome;
     }
 
-    public Status getStatus() {
+    public AccountStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(AccountStatus status) {
         this.status = status;
     }
 

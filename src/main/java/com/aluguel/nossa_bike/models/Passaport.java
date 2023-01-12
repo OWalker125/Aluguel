@@ -1,5 +1,7 @@
 package com.aluguel.nossa_bike.models;
 
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,8 +13,8 @@ import jakarta.persistence.Table;
 @Table
 public class Passaport {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    int id;
+    @GeneratedValue (strategy = GenerationType.UUID)
+    UUID id;
     @Column
     int ciclistaId;
     @Column
@@ -24,18 +26,18 @@ public class Passaport {
     public Passaport() {
     }
 
-    public Passaport(int id, int ciclistaId, String validade, String pais) {
+    public Passaport(UUID id, int ciclistaId, String validade, String pais) {
         this.id = id;
         this.ciclistaId = ciclistaId;
         this.validade = validade;
         this.pais = pais;
     }
     
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public int getId() {
+    public UUID getId() {
         return this.id;
     }
 
