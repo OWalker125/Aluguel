@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import com.aluguel.nossa_bike.models.*;
 import com.aluguel.nossa_bike.models.Ciclista.*;
 import com.aluguel.nossa_bike.models.dtos.*;
-import com.aluguel.nossa_bike.models.dtos.BicicletaDTO.StatusBic;
+import com.aluguel.nossa_bike.models.dtos.BicicletaDTO.Status;
 import com.aluguel.nossa_bike.repository.CiclistaRepository;
 import com.aluguel.nossa_bike.repository.FuncionarioRepository;
 
@@ -251,20 +251,17 @@ public class ValidationService {
     }
 
     public boolean isValidTranca(String idTranca) {
-        try {
-            return new RestTemplate().getForEntity("/tranca/" + idTranca, TrancaDTO.class) != null;
-        } catch (Exception e) {
-            return false;
-        }
-        // return true;
+            return new RestTemplate().getForEntity("http://equipamentos-env.eba-cp5jupi8.ap-south-1.elasticbeanstalk.com/tranca/" + idTranca, TrancaDTO.class) != null;
+
     }
 
     public boolean isBicAvailable(String idTranca) {
         ResponseEntity<BicicletaDTO> response = new RestTemplate()
-                .getForEntity("/tranca/" + idTranca + "/bicicleta", BicicletaDTO.class);
+                .getForEntity("http://equipamentos-env.eba-cp5jupi8.ap-south-1.elasticbeanstalk.com/tranca/" + idTranca + "/bicicleta", BicicletaDTO.class);
         BicicletaDTO bicicleta = response.getBody();
         if (bicicleta != null) {
-            if (bicicleta.getStatusBic() == StatusBic.DISPONIVEL) {
+            System.out.println(bicicleta.getStatus());
+            if (bicicleta.getStatus() == Status.DISPONIVEL) {
                 return true;
             }
         }
@@ -287,11 +284,12 @@ public class ValidationService {
     }
 
     public boolean hasChargeCompleted(UUID idCiclista) {
-        NovaCobrancaDTO cobranca = new NovaCobrancaDTO();
+        /*NovaCobrancaDTO cobranca = new NovaCobrancaDTO();
         cobranca.setValor(10);
         cobranca.setCiclista(idCiclista);
         return new RestTemplate().postForEntity("/cobranca", cobranca, CobrancaDTO.class)
-                .getStatusCode() == HttpStatus.OK;
+                .getStatusCode() == HttpStatus.OK;*/
+                return true;
     }
 
     public boolean isExistentEmail(String emailUser) {

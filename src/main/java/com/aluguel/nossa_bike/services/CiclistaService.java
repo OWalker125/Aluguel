@@ -4,7 +4,7 @@ import com.aluguel.nossa_bike.models.*;
 import com.aluguel.nossa_bike.models.Ciclista.*;
 import com.aluguel.nossa_bike.models.Devolucoes.StatusFatura;
 import com.aluguel.nossa_bike.models.dtos.*;
-import com.aluguel.nossa_bike.models.dtos.BicicletaDTO.StatusBic;
+import com.aluguel.nossa_bike.models.dtos.BicicletaDTO.Status;
 import com.aluguel.nossa_bike.repository.ActivationRepository;
 import com.aluguel.nossa_bike.repository.AlugueisRepository;
 import com.aluguel.nossa_bike.repository.CartaoRepository;
@@ -21,6 +21,8 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class CiclistaService {
@@ -145,17 +147,17 @@ public class CiclistaService {
         String erro = validador.isValidToRent(aluguelDto);
         UUID idTranca = aluguelDto.getTrancaInicio();
         UUID idCiclista = aluguelDto.getCiclista();
-        BicicletaDTO bicicleta = temporarioBicicleta();
-        // BicicletaDTO bicicleta = new RestTemplate()
-        // .getForEntity("http://localhost:8080/tranca/" + idTranca.toString() +
-        // "/bicicleta", BicicletaDTO.class).getBody();
-        UUID idBicicleta = bicicleta.getId();
+      ResponseEntity<BicicletaDTO> response = new RestTemplate()
+      .getForEntity("http://equipamentos-env.eba-cp5jupi8.ap-south-1.elasticbeanstalk.com/tranca/" + idTranca + "/bicicleta", BicicletaDTO.class);
+      BicicletaDTO bicicleta = response.getBody();
+        UUID idBicicleta = bicicleta.getUuid();
         if (erro == null) {
             Cartao cartao = dbCartao.getByCiclista_Id(idCiclista);
             Ciclista ciclista = dbCiclista.getById(idCiclista);
-            // new RestTemplate().postForEntity("http://localhost:8080/tranca/" +
-            // idTranca.toString() + "/destrancar", idBicicleta.toString(),
-            // BicicletaDTO.class);
+            IdsEquipamentosDTO ids = new IdsEquipamentosDTO();
+            ids.setBicicleta(idBicicleta);
+            System.out.println(idBicicleta.toString());
+            new RestTemplate().postForEntity("http://equipamentos-env.eba-cp5jupi8.ap-south-1.elasticbeanstalk.com/tranca/" + idTranca + "/destrancar", ids, TrancaDTO.class);
             LocalDateTime hora = LocalDateTime.now();
             // new RestTemplate().postForEntity("http://localhost:8080/enviarEmail/",
             // gerarMenssagemAluguel(aluguelDto, hora), null);
@@ -216,7 +218,7 @@ public class CiclistaService {
     }
 
     public BicicletaDTO temporarioBicicleta() {
-        BicicletaDTO bicicletaDTO = new BicicletaDTO(null, "Caloy", "Sei lá", "10/10/2010", 1, StatusBic.DISPONIVEL);
+        BicicletaDTO bicicletaDTO = new BicicletaDTO(null, "Caloy", "Sei lá", "10/10/2010", 1, Status.DISPONIVEL);
         return bicicletaDTO;
     }
 

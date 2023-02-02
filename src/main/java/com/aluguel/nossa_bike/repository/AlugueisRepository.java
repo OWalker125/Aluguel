@@ -10,6 +10,6 @@ import com.aluguel.nossa_bike.models.Alugueis;
 
 @Repository
 public interface AlugueisRepository extends JpaRepository<Alugueis, Integer>{
-   // @Query("SELECT * FROM Alugueis WHERE bicicleta = ?1 AND dataHora = (select max(this.dataHora) FROM Alugueis)")
-   // Alugueis getNewestById(UUID idBicicleta);
+   @Query("SELECT a FROM Alugueis a WHERE a.bicicleta = ?1 and dataHora = (SELECT MAX(dataHora) FROM Alugueis b WHERE b.bicicleta = ?1)")
+   Alugueis getNewestById(UUID idBicicleta);
 }

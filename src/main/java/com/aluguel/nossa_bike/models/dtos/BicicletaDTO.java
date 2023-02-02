@@ -4,34 +4,51 @@ import java.util.UUID;
 
 public class BicicletaDTO {
 
-    public enum StatusBic{DISPONIVEL,EM_USO,NOVA,APOSENTADA,REPARO_SOLICITADO,EM_REPARO}
+    public enum Status {
+        DISPONIVEL("disponivel"),
+        EM_USO("em uso"),
+        NOVA("nova"), 
+        APOSENTADA("aposentada"),
+        EM_REPARO("em reparo"),
+        REPARO_SOLICITADO("reparo solicitado");
+    
+        private final String descricao;
+    
+        Status(String descricao){
+            this.descricao = descricao;
+        }
+    
+        public String getDescricao(){
+            return descricao;
+        }
+    }
 
-    UUID id;
+    UUID uuid;
     String marca;
     String modelo;
     String ano;
     int numero;
-    StatusBic statusBic ;
+    Status status;
 
 
     public BicicletaDTO() {
     }
 
-    public BicicletaDTO(UUID id, String marca, String modelo, String ano, int numero, StatusBic statusBic) {
-        this.id = id;
+    public BicicletaDTO(UUID uuid, String marca, String modelo, String ano, int numero, Status status) {
+        this.uuid = uuid;
         this.marca = marca;
         this.modelo = modelo;
         this.ano = ano;
         this.numero = numero;
-        this.statusBic = statusBic;
+        this.status = status;
     }
 
-    public UUID getId() {
-        return this.id;
+    public UUID getUuid() {
+        return this.uuid;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setUuid(UUID id) {
+        this.uuid = id;
     }
 
     public String getMarca() {
@@ -66,12 +83,12 @@ public class BicicletaDTO {
         this.numero = numero;
     }
 
-    public StatusBic getStatusBic() {
-        return this.statusBic;
+    public Status getStatus() {
+        return this.status;
     }
 
-    public void setStatusBic(StatusBic statusBic) {
-        this.statusBic = statusBic;
+    public void setStatusBic(Status status) {
+        this.status = status;
     }
     
 }
